@@ -7,7 +7,6 @@ mesh_bat0=$(uci get network.bat0 2>/dev/null)
 mesh_nwi_mesh0=$(uci get network.nwi_mesh0 2>/dev/null)
 mesh_mesh0=$(uci get wireless.mesh0 2>/dev/null)
 lan=$(uci get network.lan.ifname 2>/dev/null)
-lan1=$(cat /etc/easymeshlan | sed -n '1p')
 mesh_id=$(uci get easymesh.config.mesh_id 2>/dev/null)
 apRadio=$(uci get easymesh.config.apRadio 2>/dev/null)
 mesh0_apRadio=$(uci get wireless.mesh0.device 2>/dev/null)
@@ -38,7 +37,7 @@ start(){
 
 			echo "" > /etc/easymeshlan
 			echo "$lan" > /etc/easymeshlan
-			uci set network.lan.ifname=$lan1 bat0
+			uci set network.lan.ifname=$lan bat0
 			uci commit network
 		fi
 
@@ -87,7 +86,7 @@ stop(){
 	if [ "$enable" != 1 ]; then
 		if [ "$mesh_bat0" = "interface" ]; then
 			uci delete network.bat0
-			uci set network.lan.ifname=$lan1
+			sed -i 's/ bat0//' /etc/config/network
 			uci commit network
 		fi
 
